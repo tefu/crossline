@@ -1,6 +1,7 @@
 (ns ^:figwheel-always perspica.core
     (:require[om.core :as om :include-macros true]
-             [om.dom :as d :include-macros true]))
+             [om.dom :as d :include-macros true]
+             [goog.dom :as dom]))
 
 (enable-console-print!)
 
@@ -9,7 +10,10 @@
                       :sketchpad-height 500
                       :brush-limit 5
                       :brush-width 3
-                      :brush-height 2}))
+                      :brush-height 2
+                      :brush-hover-width 0
+                      :brush-hover-height 0
+                      }))
 
 (defn make-brush [data owner]
   (apply
@@ -18,15 +22,35 @@
      (apply
       (partial d/tr nil)
       (for [y (range (:brush-limit data))]
-        (d/td
-         #js {:className
-              (if (and (<= x (:brush-width data))
-                       (<= y (:brush-height data)))
-                "selected"
-                "")
-              :onClick
-              #(swap! app-state assoc :brush-width x :brush-height y)}
-         "a"))))))
+        (let [outside? (fn [width height]
+                         (or (> x width)
+                             (> y height)))
+              inside? (fn [width height]
+                        (and (<= x width)
+                             (<= y height)))]
+          (d/td
+           #js {:className
+                
+                (clojure.string/join
+                 " "
+                 [(cond
+                    (and (outside? (:brush-width data) (:brush-height data))
+                         (inside? (:brush-hover-width data) (:brush-hover-height data)))
+                    "plus"
+                    (and (inside? (:brush-width data) (:brush-height data))
+                         (outside? (:brush-hover-width data) (:brush-hover-height data)))
+                    "minus"
+                    (inside? (:brush-width data) (:brush-height data))
+                    "selected"
+                    :else "")
+                  (if (inside? (:brush-hover-width data) (:brush-hover-height data))
+                    "hover"
+                    "")])
+                :onClick
+                #(swap! app-state assoc :brush-width x :brush-height y)
+                :onMouseOver
+                #(swap! app-state assoc :brush-hover-width x :brush-hover-height y)}
+           "a")))))))
 
 (defn make-palette [data owner]
   (d/div

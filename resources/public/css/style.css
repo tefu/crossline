@@ -40,6 +40,14 @@ html {
     background-color: rgb(10, 10, 10);
 }
 
-#texture-palette .texture {
-    
+#brush-size .hover {
+    color: #FF5588;
+}
+
+#brush-size .plus {
+    background-color: rgb(100, 200, 100);
+}
+
+#brush-size .minus {
+    background-color: rgb(200, 100, 100);
 }
