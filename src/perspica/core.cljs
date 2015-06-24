@@ -20,10 +20,13 @@
       (for [y (range (:brush-limit data))]
         (d/td
          #js {:className
-              (if (and (< x (:brush-width data))
-                       (< y (:brush-height data)))
+              (if (and (<= x (:brush-width data))
+                       (<= y (:brush-height data)))
                 "selected"
-                "")} "a"))))))
+                "")
+              :onClick
+              #(swap! app-state assoc :brush-width x :brush-height y)}
+         "a"))))))
 
 (defn make-palette [data owner]
   (d/div
