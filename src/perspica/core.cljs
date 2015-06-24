@@ -5,8 +5,7 @@
 
 (enable-console-print!)
 
-(def app-state (atom {:text "Hello world!"
-                      :sketchpad-width 500
+(def app-state (atom {:sketchpad-width 500
                       :sketchpad-height 500
                       :brush-limit 5
                       :brush-dim [3 2]
@@ -28,7 +27,6 @@
                              (<= y height)))]
           (d/td
            #js {:className
-                
                 (clojure.string/join
                  " "
                  [(cond
