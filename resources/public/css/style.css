@@ -20,7 +20,7 @@ html {
     background-color: hsl(100, 20%, 40%);
 }
 
-#left-options-bar *, #sketchpad-frame * {
+#left-options-bar > *, #sketchpad-frame > * {
     border: 1px solid #050505;
     padding: 1px 3px 1px 5px;
 }
@@ -33,4 +33,13 @@ html {
 #brush-size {
     margin-left: 38%;
     width: 50%;
+    margin-bottom: 50%;
+}
+
+#brush-size .selected {
+    background-color: rgb(10, 10, 10);
+}
+
+#texture-palette .texture {
+    
 }

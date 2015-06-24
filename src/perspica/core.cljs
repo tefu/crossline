@@ -7,7 +7,9 @@
 (def app-state (atom {:text "Hello world!"
                       :sketchpad-width 500
                       :sketchpad-height 500
-                      :brush-limit 5}))
+                      :brush-limit 5
+                      :brush-width 3
+                      :brush-height 2}))
 
 (defn make-brush [data owner]
   (apply
@@ -16,8 +18,18 @@
      (apply
       (partial d/tr nil)
       (for [y (range (:brush-limit data))]
-        (d/td nil "a"))))))
+        (d/td
+         #js {:className
+              (if (and (< x (:brush-width data))
+                       (< y (:brush-height data)))
+                "selected"
+                "")} "a"))))))
 
+(defn make-palette [data owner]
+  (d/div
+   #js {:id "texture-palette"}
+   (let [textures ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j"]]
+     (clj->js (map #(d/ul #js {:className "texture"} %) textures)))))
 
 (defn main-app [data owner]
   (reify om/IRender
@@ -26,7 +38,7 @@
        nil
        (d/div
         #js {:id "left-options-bar"}
-        (d/div #js {:id "texture-palette"} "texture-palette")
+        (make-palette data owner)
         (make-brush data owner)
         (d/canvas #js {:id "perspective-grid"} "perspective-grid")
         (d/div #js {:id "perspective-selection"} "perspective-selection"
