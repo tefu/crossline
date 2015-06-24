@@ -9,10 +9,8 @@
                       :sketchpad-width 500
                       :sketchpad-height 500
                       :brush-limit 5
-                      :brush-width 3
-                      :brush-height 2
-                      :brush-hover-width 0
-                      :brush-hover-height 0
+                      :brush-dim [3 2]
+                      :brush-hover-dim [0 0]
                       }))
 
 (defn make-brush [data owner]
@@ -22,10 +20,10 @@
      (apply
       (partial d/tr nil)
       (for [y (range (:brush-limit data))]
-        (let [outside? (fn [width height]
+        (let [outside? (fn [[width height]]
                          (or (> x width)
                              (> y height)))
-              inside? (fn [width height]
+              inside? (fn [[width height]]
                         (and (<= x width)
                              (<= y height)))]
           (d/td
@@ -34,22 +32,22 @@
                 (clojure.string/join
                  " "
                  [(cond
-                    (and (outside? (:brush-width data) (:brush-height data))
-                         (inside? (:brush-hover-width data) (:brush-hover-height data)))
+                    (and (outside? (:brush-dim data))
+                         (inside? (:brush-hover-dim data)))
                     "plus"
-                    (and (inside? (:brush-width data) (:brush-height data))
-                         (outside? (:brush-hover-width data) (:brush-hover-height data)))
+                    (and (inside? (:brush-dim data))
+                         (outside? (:brush-hover-dim data)))
                     "minus"
-                    (inside? (:brush-width data) (:brush-height data))
+                    (inside? (:brush-dim data))
                     "selected"
                     :else "")
-                  (if (inside? (:brush-hover-width data) (:brush-hover-height data))
+                  (if (inside? (:brush-hover-dim data))
                     "hover"
                     "")])
                 :onClick
-                #(swap! app-state assoc :brush-width x :brush-height y)
+                #(swap! app-state assoc :brush-dim [x y])
                 :onMouseOver
-                #(swap! app-state assoc :brush-hover-width x :brush-hover-height y)}
+                #(swap! app-state assoc :brush-hover-dim [x y])}
            "a")))))))
 
 (defn make-palette [data owner]
