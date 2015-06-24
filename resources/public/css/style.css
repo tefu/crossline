@@ -1,2 +1,37 @@
-/* some style */
+html {
+    font-family: "Fira Sans";
+    background-color: #fbfaf8;
+}
 
+#app {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#left-options-bar {
+    float: left;
+    width: 38%;
+    /* box-shadow: 1px 1px 2px 2px rgba(0,0,0,0.3); */
+}
+
+#sketchpad-frame {
+    margin-left: 38%;
+    background-color: hsl(100, 20%, 40%);
+}
+
+#left-options-bar *, #sketchpad-frame * {
+    border: 1px solid #050505;
+    padding: 1px 3px 1px 5px;
+}
+
+#texture-palette {
+    float: left;
+    width: 38%;
+}
+
+#brush-size {
+    margin-left: 38%;
+    width: 50%;
+}
