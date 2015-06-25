@@ -15,24 +15,18 @@
 (defn brush-table-element [data owner x y]
   (let [inside? (fn [[width height]]
                   (and (<= x width)
-                       (<= y height)))]
+                       (<= y height)))
+        brush-coord (:brush-dim data)
+        hover-coord (:brush-hover-dim data)]
     (d/td
      #js {:className
           (clojure.string/join
            " "
            [(cond
-              (and (not (inside? (:brush-dim data)))
-                   (inside? (:brush-hover-dim data)))
-              "plus"
-              (and (inside? (:brush-dim data))
-                   (not (inside? (:brush-hover-dim data))))
-              "minus"
-              (inside? (:brush-dim data))
-              "selected"
-              :else "")
-            (if (inside? (:brush-hover-dim data))
-              "hover"
-              "")])
+              (and (not (inside? brush-coord)) (inside? hover-coord)) "plus"
+              (and (inside? brush-coord) (not (inside? hover-coord))) "minus")
+            (if (inside? brush-coord) "selected")
+            (if (inside? hover-coord) "hover")])
           :onClick
           #(swap! app-state assoc :brush-dim [x y])
           :onMouseOver
