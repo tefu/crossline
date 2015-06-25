@@ -33,7 +33,7 @@
           #(swap! app-state assoc :brush-hover-dim [x y])}
      "a")))
 
-(defn make-brush [data owner]
+(defn brush-size [data owner]
   (apply
    (partial d/table #js {:id "brush-size"})
    (for [x (range (:brush-limit data))]
@@ -42,7 +42,7 @@
       (for [y (range (:brush-limit data))]
         (brush-table-element data owner x y))))))
 
-(defn make-palette [data owner]
+(defn palette [data owner]
   (d/div
    #js {:id "texture-palette"}
    (let [textures ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j"]]
@@ -55,8 +55,8 @@
        nil
        (d/div
         #js {:id "left-options-bar"}
-        (make-palette data owner)
-        (make-brush data owner)
+        (palette data owner)
+        (brush-size data owner)
         (d/canvas #js {:id "perspective-grid"} "perspective-grid")
         (d/div #js {:id "perspective-selection"} "perspective-selection"
                (d/li nil "1 pt")
