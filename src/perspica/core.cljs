@@ -35,7 +35,10 @@
 
 (defn brush-size [data owner]
   (apply
-   (partial d/table #js {:id "brush-size"})
+   (partial d/table #js {:id "brush-size"
+                         :onMouseLeave
+                         #(swap! app-state assoc
+                                 :brush-hover-dim (:brush-dim data))})
    (for [x (range (:brush-limit data))]
      (apply
       (partial d/tr nil)
