@@ -12,6 +12,33 @@
                       :brush-hover-dim [0 0]
                       }))
 
+(defn brush-table-element [data owner x y]
+  (let [inside? (fn [[width height]]
+                  (and (<= x width)
+                       (<= y height)))]
+    (d/td
+     #js {:className
+          (clojure.string/join
+           " "
+           [(cond
+              (and (not (inside? (:brush-dim data)))
+                   (inside? (:brush-hover-dim data)))
+              "plus"
+              (and (inside? (:brush-dim data))
+                   (not (inside? (:brush-hover-dim data))))
+              "minus"
+              (inside? (:brush-dim data))
+              "selected"
+              :else "")
+            (if (inside? (:brush-hover-dim data))
+              "hover"
+              "")])
+          :onClick
+          #(swap! app-state assoc :brush-dim [x y])
+          :onMouseOver
+          #(swap! app-state assoc :brush-hover-dim [x y])}
+     "a")))
+
 (defn make-brush [data owner]
   (apply
    (partial d/table #js {:id "brush-size"})
@@ -19,31 +46,7 @@
      (apply
       (partial d/tr nil)
       (for [y (range (:brush-limit data))]
-        (let [inside? (fn [[width height]]
-                        (and (<= x width)
-                             (<= y height)))]
-          (d/td
-           #js {:className
-                (clojure.string/join
-                 " "
-                 [(cond
-                    (and (not (inside? (:brush-dim data)))
-                         (inside? (:brush-hover-dim data)))
-                    "plus"
-                    (and (inside? (:brush-dim data))
-                         (not (inside? (:brush-hover-dim data))))
-                    "minus"
-                    (inside? (:brush-dim data))
-                    "selected"
-                    :else "")
-                  (if (inside? (:brush-hover-dim data))
-                    "hover"
-                    "")])
-                :onClick
-                #(swap! app-state assoc :brush-dim [x y])
-                :onMouseOver
-                #(swap! app-state assoc :brush-hover-dim [x y])}
-           "a")))))))
+        (brush-table-element data owner x y))))))
 
 (defn make-palette [data owner]
   (d/div
