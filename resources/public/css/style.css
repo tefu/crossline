@@ -11,31 +11,45 @@ html {
 }
 
 #left-options-bar {
-    float: left;
-    width: 38%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 400px;
+    height: 1250px;
+    background: #EAE5F4;
+    /* box-shadow: 1px 1px 2px 2px rgba(0,0,0,0.3); */
 }
 
 #sketchpad-frame {
-    margin-left: 38%;
-    background-color: hsl(100, 20%, 40%);
+    position: absolute;
+    left: 400px;
+    width: 650px;
+    background: #FCFBFE;
+    box-shadow: 1px 1px 2px 2px rgba(0,0,0,0.3);
 }
 
 #left-options-bar > *, #sketchpad-frame > * {
     border: 1px solid #050505;
-    padding: 1px 3px 1px 5px;
+    padding: 9px 9px 9px 9px;
 }
 
 #texture-palette {
+    position: relative;
     float: left;
-    width: 38%;
+    width: 130px;
+    height: 230px;
 }
 
 #brush-size {
-    margin-left: 38%;
-    width: 50%;
-    margin-bottom: 50%;
+    position: relative;
+    width: 250px;
+    height: 250px;
 }
 
+#brush-size td {
+    padding: 5px 5px 5px 5px;
+    margin: 5px 5px 5px 5px;
+}
 #brush-size .selected {
     background-color: rgb(10, 10, 10);
 }
@@ -50,4 +64,11 @@ html {
 
 #brush-size .minus {
     background-color: rgb(200, 100, 100);
+}
+
+#perspective-grid {
+    position: relative;
+    width: 380px;
+    padding: 0px 0px 0px 0px;
+    margin: 10px 10px 10px 10px;
 }
