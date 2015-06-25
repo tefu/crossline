@@ -19,10 +19,7 @@
      (apply
       (partial d/tr nil)
       (for [y (range (:brush-limit data))]
-        (let [outside? (fn [[width height]]
-                         (or (> x width)
-                             (> y height)))
-              inside? (fn [[width height]]
+        (let [inside? (fn [[width height]]
                         (and (<= x width)
                              (<= y height)))]
           (d/td
@@ -30,11 +27,11 @@
                 (clojure.string/join
                  " "
                  [(cond
-                    (and (outside? (:brush-dim data))
+                    (and (not (inside? (:brush-dim data)))
                          (inside? (:brush-hover-dim data)))
                     "plus"
                     (and (inside? (:brush-dim data))
-                         (outside? (:brush-hover-dim data)))
+                         (not (inside? (:brush-hover-dim data))))
                     "minus"
                     (inside? (:brush-dim data))
                     "selected"
