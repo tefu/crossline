@@ -10,36 +10,31 @@ html {
     left: 0;
 }
 
+#left-options-bar > *, #sketchpad-frame > * {
+    box-shadow: 1px 1px 2px 2px rgba(0,0,0,0.3);
+    margin: 5px 10px 5px 10px;
+}
+
+/* Controls to change brush size, texture, and perspective
+  --------------------------------------------------------------------------- */
 #left-options-bar {
     position: absolute;
     top: 0px;
     left: 0px;
     width: 400px;
     height: 1250px;
-    background: #EAE5F4;
-    /* box-shadow: 1px 1px 2px 2px rgba(0,0,0,0.3); */
 }
 
-#sketchpad-frame {
-    position: absolute;
-    left: 400px;
-    width: 650px;
-    background: #FCFBFE;
-    box-shadow: 1px 1px 2px 2px rgba(0,0,0,0.3);
-}
-
-#left-options-bar > *, #sketchpad-frame > * {
-    border: 1px solid #050505;
-    padding: 9px 9px 9px 9px;
-}
-
+/* Textures */
 #texture-palette {
     position: relative;
     float: left;
-    width: 130px;
-    height: 230px;
+    width: 120px;
+    height: 250px;
+    overflow: scroll;
 }
 
+/* Brush size */
 #brush-size {
     position: relative;
     width: 250px;
@@ -47,11 +42,11 @@ html {
 }
 
 #brush-size td {
-    padding: 5px 5px 5px 5px;
-    margin: 5px 5px 5px 5px;
+    padding: 0 0 0 0;
 }
+
 #brush-size .selected {
-    background-color: rgb(10, 10, 10);
+    background-color: #080808;
 }
 
 #brush-size .hover {
@@ -59,16 +54,27 @@ html {
 }
 
 #brush-size .plus {
-    background-color: rgb(100, 200, 100);
+    background-color: #30AA40;
 }
 
 #brush-size .minus {
-    background-color: rgb(200, 100, 100);
+    background-color: #FF2233;
 }
 
+/* Perspective */
 #perspective-grid {
     position: relative;
     width: 380px;
     padding: 0px 0px 0px 0px;
     margin: 10px 10px 10px 10px;
+}
+
+/* Sketchpad + time machine
+  --------------------------------------------------------------------------- */
+#sketchpad-frame {
+    position: absolute;
+    left: 400px;
+    width: 650px;
+    background: #FCFBFE;
+    box-shadow: 1px 1px 2px 2px rgba(0,0,0,0.3);
 }

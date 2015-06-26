@@ -7,7 +7,7 @@
 
 (def app-state (atom {:sketchpad-width 500
                       :sketchpad-height 500
-                      :brush-limit 5
+                      :brush-limit 10
                       :brush-dim [3 2]
                       :brush-hover-dim [0 0]
                       }))
@@ -31,7 +31,7 @@
           #(swap! app-state assoc :brush-dim [x y])
           :onMouseOver
           #(swap! app-state assoc :brush-hover-dim [x y])}
-     "a")))
+     "")))
 
 (defn brush-size [data owner]
   (apply
