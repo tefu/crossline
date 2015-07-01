@@ -7,17 +7,19 @@
 
 (def app-state (atom {:sketchpad-width 500
                       :sketchpad-height 500
-                      :brush-limit 10
-                      :brush-dim [3 2]
-                      :brush-hover-dim [0 0]
+                      :brush
+                      {
+                       :limit 5
+                       :dim [3 2]
+                       :hover-dim [0 0]}
                       }))
 
 (defn brush-table-element [data owner x y]
   (let [inside? (fn [[width height]]
                   (and (<= x width)
                        (<= y height)))
-        brush-coord (:brush-dim data)
-        hover-coord (:brush-hover-dim data)]
+        brush-coord (:dim data)
+        hover-coord (:hover-dim data)]
     (d/td
      #js {:className
           (clojure.string/join
@@ -28,28 +30,34 @@
             (if (inside? brush-coord) "selected")
             (if (inside? hover-coord) "hover")])
           :onClick
-          #(swap! app-state assoc :brush-dim [x y])
+          (fn [] (om/transact! data #(assoc % :dim [x y])))
           :onMouseOver
-          #(swap! app-state assoc :brush-hover-dim [x y])}
+          (fn [] (om/transact! data #(assoc % :hover-dim [x y])))}
      "")))
 
 (defn brush-size [data owner]
-  (apply
-   (partial d/table #js {:id "brush-size"
-                         :onMouseLeave
-                         #(swap! app-state assoc
-                                 :brush-hover-dim (:brush-dim data))})
-   (for [x (range (:brush-limit data))]
-     (apply
-      (partial d/tr nil)
-      (for [y (range (:brush-limit data))]
-        (brush-table-element data owner x y))))))
+  (reify om/IRender
+    (render [_]
+      (apply
+       (partial d/table #js {:id "brush-size"
+                             :onMouseLeave
+                             (fn []
+                               (om/transact!
+                                data
+                                #(assoc % :hover-dim (:dim %))))})
+       (for [x (range (:limit data))]
+         (apply
+          (partial d/tr nil)
+          (for [y (range (:limit data))]
+            (brush-table-element data owner x y))))))))
 
 (defn palette [data owner]
-  (d/div
-   #js {:id "texture-palette"}
-   (let [textures ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j"]]
-     (clj->js (map #(d/ul #js {:className "texture"} %) textures)))))
+  (reify om/IRender
+    (render [_]
+      (d/div
+       #js {:id "texture-palette"}
+       (let [textures ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j"]]
+         (clj->js (map #(d/ul #js {:className "texture"} %) textures)))))))
 
 (defn main-app [data owner]
   (reify om/IRender
@@ -58,8 +66,8 @@
        nil
        (d/div
         #js {:id "left-options-bar"}
-        (palette data owner)
-        (brush-size data owner)
+        (om/build palette data)
+        (om/build brush-size (:brush data))
         (d/canvas #js {:id "perspective-grid"} "perspective-grid")
         (d/div #js {:id "perspective-selection"} "perspective-selection"
                (d/li nil "1 pt")
