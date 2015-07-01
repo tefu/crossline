@@ -29,16 +29,16 @@ html {
 #texture-palette {
     position: relative;
     float: left;
-    width: 120px;
-    height: 250px;
+    width: 170px;
+    height: 200px;
     overflow: scroll;
 }
 
 /* Brush size */
 #brush-size {
     position: relative;
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
 }
 
 #brush-size td {
