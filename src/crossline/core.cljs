@@ -1,7 +1,9 @@
 (ns ^:figwheel-always crossline.core
     (:require[om.core :as om :include-macros true]
              [om.dom :as d :include-macros true]
-             [sablono.core :as html :include-macros true]))
+             [goog.events :as events]
+             [sablono.core :as html :include-macros true]
+             [monet.canvas :as canvas]))
 
 (enable-console-print!)
 
@@ -62,6 +64,31 @@
     (let [textures ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j"]]
       (clj->js (map #(d/ul #js {:className "texture"} %) textures))))))
 
+(defn canvas-coordinates [event]
+  [(.-offsetX event) (.-offsetY event)])
+
+(defn draw-circle [canvas event]
+  (let [[x y] (canvas-coordinates event)
+        ctx  (.getContext canvas "2d")]
+    (.beginPath ctx)
+    (.arc ctx x y 50 0 (* 2 (.-PI js/Math)))
+    (.stroke ctx)))
+
+(defn sketchpad [data owner]
+  (reify
+    om/IDidMount
+    (did-mount [_]
+      (let [sketchpad (om/get-node owner "sketchpad-ref")]
+        (events/listen sketchpad "mousedown" #(draw-circle sketchpad %))))
+
+    om/IRender
+    (render [_]
+      (d/div nil (d/canvas #js {:id "sketchpad"
+                            :ref "sketchpad-ref"
+                            :width (:sketchpad-width data)
+                            :height (:sketchpad-height data)
+                            })))))
+
 (defn main-app [data owner]
   (om/component
    (d/div
@@ -80,15 +107,14 @@
     (d/div
      #js {:id "sketchpad-frame"}
      "sketchpad-frame"
-     (d/canvas #js {:id "sketch-pad"
-                    :width (:sketchpad-width data)
-                    :height (:sketchpad-height data)})
+     (om/build sketchpad data)
      (d/div #js {:id "time-machine"})))))
 
 (om/root
  main-app
  app-state
  {:target (. js/document (getElementById "app"))})
+
 
 
 (defn on-js-reload []
