@@ -35,29 +35,29 @@ html {
 }
 
 /* Brush size */
-#brush-size {
+#brush-size-grid {
     position: relative;
     width: 200px;
     height: 200px;
 }
 
-#brush-size td {
+#brush-size-grid td {
     padding: 0 0 0 0;
 }
 
-#brush-size .selected {
+#brush-size-grid .selected {
     background-color: #080808;
 }
 
-#brush-size .hover {
+#brush-size-grid .hover {
     color: #FF5588;
 }
 
-#brush-size .plus {
+#brush-size-grid .plus {
     background-color: #30AA40;
 }
 
-#brush-size .minus {
+#brush-size-grid .minus {
     background-color: #FF2233;
 }
 

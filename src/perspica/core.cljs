@@ -11,35 +11,36 @@
                       {
                        :limit 5
                        :dim [3 2]
-                       :hover-dim [0 0]}
-                      }))
+                       :hover-dim [0 0]}}))
+
+(defn brush-table-element-classes
+  [x y brush-coord hover-coord]
+  (letfn [(inside? [[width height]]
+            (and (<= x width)
+                 (<= y height)))]
+    (clojure.string/join
+     " "
+     [(cond
+        (and (not (inside? brush-coord)) (inside? hover-coord)) "plus"
+        (and (inside? brush-coord) (not (inside? hover-coord))) "minus")
+      (if (inside? brush-coord) "selected")
+      (if (inside? hover-coord) "hover")])))
 
 (defn brush-table-element [data owner x y]
-  (let [inside? (fn [[width height]]
-                  (and (<= x width)
-                       (<= y height)))
-        brush-coord (:dim data)
-        hover-coord (:hover-dim data)]
-    (d/td
-     #js {:className
-          (clojure.string/join
-           " "
-           [(cond
-              (and (not (inside? brush-coord)) (inside? hover-coord)) "plus"
-              (and (inside? brush-coord) (not (inside? hover-coord))) "minus")
-            (if (inside? brush-coord) "selected")
-            (if (inside? hover-coord) "hover")])
-          :onClick
-          (fn [] (om/transact! data #(assoc % :dim [x y])))
-          :onMouseOver
-          (fn [] (om/transact! data #(assoc % :hover-dim [x y])))}
-     "")))
+  (d/td
+   #js {:className
+        (brush-table-element-classes x y (:dim data) (:hover-dim data))
+        :onClick
+        (fn [] (om/transact! data #(assoc % :dim [x y])))
+        :onMouseOver
+        (fn [] (om/transact! data #(assoc % :hover-dim [x y])))}
+   ""))
 
-(defn brush-size [data owner]
+(defn brush-size-grid [data owner]
   (reify om/IRender
     (render [_]
       (apply
-       (partial d/table #js {:id "brush-size"
+       (partial d/table #js {:id "brush-size-grid"
                              :onMouseLeave
                              (fn []
                                (om/transact!
@@ -67,7 +68,7 @@
        (d/div
         #js {:id "left-options-bar"}
         (om/build palette data)
-        (om/build brush-size (:brush data))
+        (om/build brush-size-grid (:brush data))
         (d/canvas #js {:id "perspective-grid"} "perspective-grid")
         (d/div #js {:id "perspective-selection"} "perspective-selection"
                (d/li nil "1 pt")
