@@ -1,7 +1,7 @@
 (ns ^:figwheel-always crossline.core
     (:require[om.core :as om :include-macros true]
              [om.dom :as d :include-macros true]
-             [goog.dom :as dom]))
+             [sablono.core :as html :include-macros true]))
 
 (enable-console-print!)
 
@@ -44,49 +44,46 @@
            table-rows))
 
 (defn brush-size-grid [data owner]
-  (reify om/IRender
-    (render [_]
-      (brush-size-grid-table
-       data owner
-       (clj->js
-        (for [x (range (:limit data))]
-          (d/tr
-           nil
-           (clj->js
-            (for [y (range (:limit data))]
-              (brush-table-element data owner x y))))))))))
+  (om/component
+   (brush-size-grid-table
+    data owner
+    (clj->js
+     (for [x (range (:limit data))]
+       (d/tr
+        nil
+        (clj->js
+         (for [y (range (:limit data))]
+           (brush-table-element data owner x y)))))))))
 
 (defn palette [data owner]
-  (reify om/IRender
-    (render [_]
-      (d/div
-       #js {:id "texture-palette"}
-       (let [textures ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j"]]
-         (clj->js (map #(d/ul #js {:className "texture"} %) textures)))))))
+  (om/component
+   (d/div
+    #js {:id "texture-palette"}
+    (let [textures ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j"]]
+      (clj->js (map #(d/ul #js {:className "texture"} %) textures))))))
 
 (defn main-app [data owner]
-  (reify om/IRender
-    (render [_]
-      (d/div
-       nil
-       (d/div
-        #js {:id "left-options-bar"}
-        (om/build palette data)
-        (om/build brush-size-grid (:brush data))
-        (d/canvas #js {:id "perspective-grid"} "perspective-grid")
-        (d/div #js {:id "perspective-selection"} "perspective-selection"
-               (d/li nil "1 pt")
-               (d/li nil "2 pt")
-               (d/li nil "3 pt")
-               (d/li nil "4 pt")
-               (d/li nil "5 pt")))
-       (d/div
-        #js {:id "sketchpad-frame"}
-        "sketchpad-frame"
-        (d/canvas #js {:id "sketch-pad"
-                       :width (:sketchpad-width data)
-                       :height (:sketchpad-height data)})
-        (d/div #js {:id "time-machine"}))))))
+  (om/component
+   (d/div
+    nil
+    (d/div
+     #js {:id "left-options-bar"}
+     (om/build palette data)
+     (om/build brush-size-grid (:brush data))
+     (d/canvas #js {:id "perspective-grid"} "perspective-grid")
+     (d/div #js {:id "perspective-selection"} "perspective-selection"
+            (d/li nil "1 pt")
+            (d/li nil "2 pt")
+            (d/li nil "3 pt")
+            (d/li nil "4 pt")
+            (d/li nil "5 pt")))
+    (d/div
+     #js {:id "sketchpad-frame"}
+     "sketchpad-frame"
+     (d/canvas #js {:id "sketch-pad"
+                    :width (:sketchpad-width data)
+                    :height (:sketchpad-height data)})
+     (d/div #js {:id "time-machine"})))))
 
 (om/root
  main-app
