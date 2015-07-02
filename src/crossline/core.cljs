@@ -11,7 +11,9 @@
                       :sketchpad-height 500
                       :brush {:limit 5
                               :dim [3 2]
-                              :hover-dim [0 0]}}))
+                              :hover-dim [0 0]}
+                      :theta 0
+                      :phi 0}))
 
 (defn brush-table-element-classes
   [x y brush-coord hover-coord]
@@ -97,10 +99,10 @@
     om/IRender
     (render [_]
       (d/div nil (d/canvas #js {:id "sketchpad"
-                            :ref "sketchpad-ref"
-                            :width (:sketchpad-width data)
-                            :height (:sketchpad-height data)
-                            })))))
+                                :ref "sketchpad-ref"
+                                :width (:sketchpad-width data)
+                                :height (:sketchpad-height data)
+                                })))))
 
 (defn main-app [data owner]
   (om/component
@@ -110,7 +112,21 @@
      #js {:id "left-options-bar"}
      (om/build palette data)
      (om/build brush-size-grid (:brush data))
-     (d/canvas #js {:id "perspective-grid"} "perspective-grid")
+     (d/div #js {:id "perspective-grid"}
+            (d/input #js {:type "text"
+                          :value (:theta data)
+                          :onChange
+                          (fn [e]
+                            (om/transact!
+                             data #(assoc % :theta
+                                          (js/parseInt (.. e -target -value)))))})
+            (d/input #js {:type "text"
+                          :value (:phi data)
+                          :onChange
+                          (fn [e]
+                            (om/transact!
+                             data #(assoc % :phi
+                                          (js/parseInt (.. e -target -value)))))}))
      (d/div #js {:id "perspective-selection"} "perspective-selection"
             (d/li nil "1 pt")
             (d/li nil "2 pt")
