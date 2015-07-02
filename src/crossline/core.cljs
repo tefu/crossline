@@ -1,4 +1,4 @@
-(ns ^:figwheel-always perspica.core
+(ns ^:figwheel-always crossline.core
     (:require[om.core :as om :include-macros true]
              [om.dom :as d :include-macros true]
              [goog.dom :as dom]))
@@ -7,11 +7,9 @@
 
 (def app-state (atom {:sketchpad-width 500
                       :sketchpad-height 500
-                      :brush
-                      {
-                       :limit 5
-                       :dim [3 2]
-                       :hover-dim [0 0]}}))
+                      :brush {:limit 5
+                              :dim [3 2]
+                              :hover-dim [0 0]}}))
 
 (defn brush-table-element-classes
   [x y brush-coord hover-coord]

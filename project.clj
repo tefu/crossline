@@ -1,4 +1,4 @@
-(defproject perspica "0.1.0-SNAPSHOT"
+(defproject crossline "0.1.0-SNAPSHOT"
   :description "FIXME: write this!"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -21,17 +21,17 @@
     :builds [{:id "dev"
               :source-paths ["src"]
 
-              :figwheel { :on-jsload "perspica.core/on-js-reload" }
+              :figwheel { :on-jsload "crossline.core/on-js-reload" }
 
-              :compiler {:main perspica.core
+              :compiler {:main crossline.core
                          :asset-path "js/compiled/out"
-                         :output-to "resources/public/js/compiled/perspica.js"
+                         :output-to "resources/public/js/compiled/crossline.js"
                          :output-dir "resources/public/js/compiled/out"
                          :source-map-timestamp true }}
              {:id "min"
               :source-paths ["src"]
-              :compiler {:output-to "resources/public/js/compiled/perspica.js"
-                         :main perspica.core                         
+              :compiler {:output-to "resources/public/js/compiled/crossline.js"
+                         :main crossline.core                         
                          :optimizations :advanced
                          :pretty-print false}}]}
 
