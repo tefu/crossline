@@ -36,21 +36,27 @@
         (fn [] (om/transact! data #(assoc % :hover-dim [x y])))}
    ""))
 
+(defn brush-size-grid-table [data owner table-rows]
+  (d/table #js {:id "brush-size-grid"
+                :onMouseLeave
+                (fn []
+                  (om/transact!
+                   data
+                   #(assoc % :hover-dim (:dim %))))}
+           table-rows))
+
 (defn brush-size-grid [data owner]
   (reify om/IRender
     (render [_]
-      (apply
-       (partial d/table #js {:id "brush-size-grid"
-                             :onMouseLeave
-                             (fn []
-                               (om/transact!
-                                data
-                                #(assoc % :hover-dim (:dim %))))})
-       (for [x (range (:limit data))]
-         (apply
-          (partial d/tr nil)
-          (for [y (range (:limit data))]
-            (brush-table-element data owner x y))))))))
+      (brush-size-grid-table
+       data owner
+       (clj->js
+        (for [x (range (:limit data))]
+          (d/tr
+           nil
+           (clj->js
+            (for [y (range (:limit data))]
+              (brush-table-element data owner x y))))))))))
 
 (defn palette [data owner]
   (reify om/IRender
