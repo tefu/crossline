@@ -67,6 +67,19 @@
 (defn canvas-coordinates [event]
   [(.-offsetX event) (.-offsetY event)])
 
+;; Calculating the radius of an arc given the width and height.
+;; See here: http://www.mathopenref.com/arcradius.html
+(defn arc-radius [width height]
+  (+ (/ height 2) (/ (.pow js/Math width 2) (* 8 height))))
+
+(defn draw-arc [canvas event]
+  (let [[x y] (canvas-coordinates event)
+        ctx  (.getContext canvas "2d")]
+    (let [radius (arc-radius 500 (- x 250))]
+      (.beginPath ctx)
+      (.arc ctx (- x radius) 250 radius 0 (* 2 (.-PI js/Math)))
+      (.stroke ctx))))
+
 (defn draw-circle [canvas event]
   (let [[x y] (canvas-coordinates event)
         ctx  (.getContext canvas "2d")]
@@ -79,7 +92,7 @@
     om/IDidMount
     (did-mount [_]
       (let [sketchpad (om/get-node owner "sketchpad-ref")]
-        (events/listen sketchpad "mousedown" #(draw-circle sketchpad %))))
+        (events/listen sketchpad "mousedown" #(draw-arc sketchpad %))))
 
     om/IRender
     (render [_]
