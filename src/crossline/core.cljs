@@ -2,8 +2,7 @@
     (:require[om.core :as om :include-macros true]
              [om.dom :as d :include-macros true]
              [goog.events :as events]
-             [sablono.core :as html :include-macros true]
-             [monet.canvas :as canvas]))
+             [sablono.core :as html :include-macros true]))
 
 (enable-console-print!)
 
@@ -69,24 +68,35 @@
 (defn canvas-coordinates [event]
   [(.-offsetX event) (.-offsetY event)])
 
-;; Calculating the radius of an arc given the width and height.
-;; See here: http://www.mathopenref.com/arcradius.html
-(defn arc-radius [width height]
-  (+ (/ height 2) (/ (.pow js/Math width 2) (* 8 height))))
+(defn slope [[x1 y1] [x2 y2]]
+  (/ (- y2 y1) (- x2 x1)))
+
+(defn distance [[x1 y1] [x2 y2]]
+  (.sqrt js/Math (+ (.pow js/Math (- x2 x1) 2)
+                    (.pow js/Math (- y2 y1) 2))))
+
+;; Find the circumscribed circle given coordinates of a triangle's three points.
+;; Using the equation from here: http://paulbourke.net/geometry/circlesphere/
+(defn triangle->circle [[x1 y1] [x2 y2] [x3 y3]]
+  (let [slope-a (slope [x1 y1] [x2 y2]) 
+        slope-b (slope [x2 y2] [x3 y3])
+        x-center (/ (+ (* slope-a slope-b (- y1 y3))
+                       (* slope-b (+ x1 x2))
+                       (- (* slope-a (+ x2 x3))))
+                    (* 2 (- slope-b slope-a)))
+        y-center (- (/ (+ y1 y2) 2)
+                    (/ (- x-center (/ (+ x1 x2) 2)) slope-a))
+        radius (distance [x1 y1] [x-center y-center])]
+    [x-center y-center radius]))
 
 (defn draw-arc [canvas event]
-  (let [[x y] (canvas-coordinates event)
-        ctx  (.getContext canvas "2d")]
-    (let [radius (arc-radius 500 (- x 250))]
-      (.beginPath ctx)
-      (.arc ctx (- x radius) 250 radius 0 (* 2 (.-PI js/Math)))
-      (.stroke ctx))))
-
-(defn draw-circle [canvas event]
-  (let [[x y] (canvas-coordinates event)
+  (let [click-coords (canvas-coordinates event)
+        left [0 250]
+        right [500 250]
+        [arc-x arc-y radius] (triangle->circle left click-coords right)
         ctx  (.getContext canvas "2d")]
     (.beginPath ctx)
-    (.arc ctx x y 50 0 (* 2 (.-PI js/Math)))
+    (.arc ctx arc-x arc-y radius 0 (* 2 (.-PI js/Math)))
     (.stroke ctx)))
 
 (defn sketchpad [data owner]
